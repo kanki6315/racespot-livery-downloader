@@ -22,7 +22,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Label x:Name="pathLabelValue" Content="" HorizontalAlignment="Left" Margin="111,116,0,0" VerticalAlignment="Top" Width="258" Height="25"/>
-        <Button Content="Select Path" HorizontalAlignment="Left" Margin="35,199,0,0" VerticalAlignment="Top" Height="34" Width="106" Click="Button_Click"/>
+        <Button x:Name="pathButton" Content="Select Path" HorizontalAlignment="Left" Margin="35,199,0,0" VerticalAlignment="Top" Height="34" Width="106" Click="path_Click"/>
         <Button x:Name="downloadButton" Content="Download Paint Files" HorizontalAlignment="Left" Margin="182,199,0,0" VerticalAlignment="Top" Height="34" Width="194" IsEnabled="false" Click="downloadButton_Click"/>
         <ProgressBar x:Name="progressBar" Height="25" Width="350" Minimum="0" Maximum="100" Value="75" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20"/>
     </Grid>

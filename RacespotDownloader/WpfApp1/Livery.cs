@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace WpfApp1
 {
-    internal class Livery
+    public class Livery
     {
         public string ITeamId { get; set; }
         public string ITeamName { get; set; }

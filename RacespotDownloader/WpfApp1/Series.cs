@@ -2,7 +2,7 @@
 
 namespace WpfApp1
 {
-    internal class Series
+    public class Series
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

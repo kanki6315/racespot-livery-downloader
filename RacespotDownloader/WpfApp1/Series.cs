@@ -6,7 +6,7 @@ namespace WpfApp1
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string IsLeague { get; set; }
+        public bool IsLeague { get; set; }
         public string IsTeam { get; set; }
     }
 }

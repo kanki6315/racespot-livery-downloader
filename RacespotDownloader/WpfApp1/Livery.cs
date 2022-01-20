@@ -1,13 +1,36 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace WpfApp1
 {
     internal class Livery
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string ITeamId { get; set; }
+        public string ITeamName { get; set; }
         public bool IsRejected { get; set; }
         public bool IsCustomNumber { get; set; }
-        public string LiveryType { get; set; }
+        public string IracingId { get; set; }
+        public LiveryType LiveryType { get; set; }
+        public RejectionStatus RejectionStatus { get; set; }
+        public string carPath { get; set; }
+
+        public bool IsTeam()
+        {
+            return !String.IsNullOrEmpty(ITeamId);
+        }
+    }
+
+    public enum LiveryType
+    {
+        Car,
+        Suit,
+        Helmet,
+        [EnumMember(Value = "Spec Map")]
+        SpecMap
+    }
+
+    public enum RejectionStatus
+    {
+        Rejected, Updated, Resolved
     }
 }

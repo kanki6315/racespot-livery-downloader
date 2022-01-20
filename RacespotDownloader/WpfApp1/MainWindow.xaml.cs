@@ -28,6 +28,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            progressBar.Visibility = Visibility.Hidden;
 
             settings = new ConfigurationBuilder<IMySettings>()
                .UseJsonFile("settings.json")
@@ -59,10 +60,10 @@ namespace WpfApp1
             return series;
         }
 
-        async Task<List<Livery>> GetLiveriesListAsync(string seriesId)
+        async Task<List<Livery>> GetLiveriesListAsync(Guid seriesId)
         {
             List<Livery> liveries = null;
-            HttpResponseMessage response = await client.GetAsync($"https://api.racespot.media/series/{seriesId}/liveries?showAll=true");
+            HttpResponseMessage response = await client.GetAsync($"https://api.racespot.media/series/{seriesId}/liveries/download");
             if (response.IsSuccessStatusCode)
             {
                 liveries = JsonConvert.DeserializeObject<List<Livery>>(await response.Content.ReadAsStringAsync());
@@ -73,14 +74,6 @@ namespace WpfApp1
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             cmbSeries.ItemsSource = await GetSeriesListAsync();
-        }
-
-        public interface IMySettings
-        {
-            string UserPath { get; set; }
-            string AWSAccessKey { get; }
-            string AWSSecretKey { get; }
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -104,14 +97,52 @@ namespace WpfApp1
             }
         }
 
-        private void downloadButton_Click(object sender, RoutedEventArgs e)
+        private async void downloadButton_Click(object sender, RoutedEventArgs e)
         {
             if (cmbSeries.SelectedIndex == -1)
             {
                 return;
             }
 
-            transferUtility.down
+            var selectedSeries = series[cmbSeries.SelectedIndex];
+            var liveries = await GetLiveriesListAsync(selectedSeries.Id);
+
+            var filePaths = liveries.Select(l => GetFileName(l, selectedSeries)).ToList();
+            Console.Write(liveries.Count);
+        }
+        
+        private string GetFileName(Livery livery, Series series)
+        {
+            string id = livery.IsTeam() ? livery.ITeamId : livery.IracingId;
+            string itemPath;
+            string fileType = "tga";
+            string carNumPath = series.IsLeague && livery.IsCustomNumber ? "_num" : "";
+            string teamPath = livery.IsTeam() ? "_team" : "";
+            switch (livery.LiveryType)
+            {
+                case LiveryType.Helmet:
+                    itemPath = "helmet";
+                    break;
+                case LiveryType.Suit:
+                    itemPath = "suit";
+                    break;
+                case LiveryType.SpecMap:
+                    itemPath = "car_spec";
+                    fileType = "mip";
+                    break;
+                case LiveryType.Car:
+                default:
+                    itemPath = $"car{carNumPath}";
+                    break;
+            }
+
+            if (livery.LiveryType == LiveryType.Car || livery.LiveryType == LiveryType.SpecMap)
+            {
+                return $"{series.Id}/{livery.carPath}/{itemPath}{teamPath}_{id}.{fileType}";
+            } else
+            {
+                return $"{series.Id}/{itemPath}{teamPath}_{id}.{fileType}";
+            }
         }
     }
 }
